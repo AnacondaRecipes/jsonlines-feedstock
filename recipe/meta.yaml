@@ -1,5 +1,5 @@
 {% set name = "jsonlines" %}
-{% set version = "2.0.0" %}
+{% set version = "4.0.0" %}
 
 package:
   name: {{ name|lower }}
@@ -7,12 +7,12 @@ package:
 
 source:
   url: https://pypi.org/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
-  sha256: 6fdd03104c9a421a1ba587a121aaac743bf02d8f87fa9cdaa3b852249a241fe8
+  sha256: 0c6d2c09117550c089995247f605ae4cf77dd1533041d366351f6f298822ea74
 
 build:
-  noarch: python
-  number: 2
-  script: {{ PYTHON }} -m pip install --no-deps --ignore-installed .
+  skip: true # [py<38]
+  number: 0
+  script: {{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
 
 requirements:
   host:
@@ -20,15 +20,24 @@ requirements:
     - pip
   run:
     - python
-    - six
+    - attrs >=19.2.0
 
 test:
   imports:
     - jsonlines
+    - jsonlines.open
+    - jsonlines.Reader
+    - jsonlines.Writer
+    - jsonlines.Error
+    - jsonlines.InvalidLineError
+  source_files:
+    - tests
   requires:
     - pip
+    - pytest
   commands:
     - pip check
+    - pytest -v tests
 
 about:
   home: https://github.com/wbolster/jsonlines
@@ -42,3 +51,4 @@ about:
 extra:
   recipe-maintainers:
     - pmlandwehr
+    - mgralczyk
