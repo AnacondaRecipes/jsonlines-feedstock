@@ -2,7 +2,7 @@
 {% set version = "4.0.0" %}
 
 package:
-  name: {{ name|lower }}
+  name: {{ name }}
   version: {{ version }}
 
 source:
@@ -25,11 +25,7 @@ requirements:
 test:
   imports:
     - jsonlines
-    - jsonlines.open
-    - jsonlines.Reader
-    - jsonlines.Writer
-    - jsonlines.Error
-    - jsonlines.InvalidLineError
+    - jsonlines.jsonlines
   source_files:
     - tests
   requires:
@@ -44,11 +40,10 @@ about:
   license_file: LICENSE.rst
   license: BSD-3-Clause
   license_family: BSD
-  summary: 'Library with helpers for the jsonlines file format'
+  summary: 'Library with helpers for the jsonlines and ndjson file formats'
   dev_url: https://github.com/wbolster/jsonlines
   doc_url: https://jsonlines.readthedocs.org/
 
 extra:
   recipe-maintainers:
     - pmlandwehr
-    - mgralczyk
