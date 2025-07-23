@@ -18,6 +18,7 @@ requirements:
   host:
     - python
     - pip
+    - wheel
   run:
     - python
     - attrs >=19.2.0
@@ -41,8 +42,15 @@ about:
   license: BSD-3-Clause
   license_family: BSD
   summary: 'Library with helpers for the jsonlines and ndjson file formats'
+  description: |
+    This data format is straight-forward: it is simply one valid JSON value per line,
+    encoded using UTF-8. While code to consume and create such data is not that complex,
+    it quickly becomes non-trivial enough to warrant a dedicated library when adding data
+    validation, error handling, support for both binary and text streams, and so on.
+    This small library implements all that (and more!) so that applications using this
+    format do not have to reinvent the wheel.
   dev_url: https://github.com/wbolster/jsonlines
-  doc_url: https://jsonlines.readthedocs.org/
+  doc_url: https://jsonlines.readthedocs.io/
 
 extra:
   recipe-maintainers:
