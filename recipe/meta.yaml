@@ -23,6 +23,17 @@ requirements:
     - python
     - attrs >=19.2.0
 
+
+# Skip following tests due to temporary file permission problems in Windows.
+# Checked manaully, works properly.
+{% set skip_keywords = [
+  "test_open_reading",
+  "test_open_reading_with_utf8_bom",
+  "test_open_writing",
+  "test_open_and_append_writing"
+] %}
+
+
 test:
   imports:
     - jsonlines
@@ -35,10 +46,7 @@ test:
   commands:
     - pip check
     - pytest -v tests # [not win]
-    # Skip due to path problems in tests implementation for Windows.
-    # Checked manaully, works properly.
-    - pytest -v tests -k "not test_open_reading and not test_open_reading_with_utf8_bom and not test_open_writing and not test_open_and_append_writing" # [win]
-
+    - pytest -v tests -k "not ({{ skip_keywords | join(' or ') }})" # [win]
 
 about:
   home: https://github.com/wbolster/jsonlines
