@@ -1,43 +1,69 @@
 {% set name = "jsonlines" %}
-{% set version = "2.0.0" %}
+{% set version = "4.0.0" %}
 
 package:
-  name: {{ name|lower }}
+  name: {{ name }}
   version: {{ version }}
 
 source:
   url: https://pypi.org/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
-  sha256: 6fdd03104c9a421a1ba587a121aaac743bf02d8f87fa9cdaa3b852249a241fe8
+  sha256: 0c6d2c09117550c089995247f605ae4cf77dd1533041d366351f6f298822ea74
 
 build:
-  noarch: python
-  number: 2
-  script: {{ PYTHON }} -m pip install --no-deps --ignore-installed .
+  skip: true # [py<38]
+  number: 0
+  script: {{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
 
 requirements:
   host:
     - python
     - pip
+    - wheel
+    - setuptools
   run:
     - python
-    - six
+    - attrs >=19.2.0
+
+
+# Skip following tests due to temporary file permission problems in Windows.
+# Checked manaully, works properly.
+{% set skip_keywords = [
+  "test_open_reading",
+  "test_open_reading_with_utf8_bom",
+  "test_open_writing",
+  "test_open_and_append_writing"
+] %}
+
 
 test:
   imports:
     - jsonlines
+    - jsonlines.jsonlines
+  source_files:
+    - tests
   requires:
     - pip
+    - pytest
   commands:
     - pip check
+    - pytest -v tests # [not win]
+    - pytest -v tests -k "not ({{ skip_keywords | join(' or ') }})" # [win]
 
 about:
   home: https://github.com/wbolster/jsonlines
   license_file: LICENSE.rst
   license: BSD-3-Clause
   license_family: BSD
-  summary: 'Library with helpers for the jsonlines file format'
+  summary: 'Library with helpers for the jsonlines and ndjson file formats'
+  description: |
+    This data format is straight-forward: it is simply one valid JSON value per line,
+    encoded using UTF-8. While code to consume and create such data is not that complex,
+    it quickly becomes non-trivial enough to warrant a dedicated library when adding data
+    validation, error handling, support for both binary and text streams, and so on.
+    This small library implements all that (and more!) so that applications using this
+    format do not have to reinvent the wheel.
   dev_url: https://github.com/wbolster/jsonlines
-  doc_url: https://jsonlines.readthedocs.org/
+  doc_url: https://jsonlines.readthedocs.io/
 
 extra:
   recipe-maintainers:
